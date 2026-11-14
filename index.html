@@ -3,31 +3,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shri Biroba Furniture</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shri Biroba Furniture | Premium Furniture</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#111;color:#fff;font-family:Arial,sans-serif}
-header{background:#090909;padding:20px;text-align:center;border-bottom:1px solid #9b7948}
-header h1{color:#d5b477;margin:5px;font-size:25px}
-header p{color:#ccc;letter-spacing:2px;font-size:11px}
-nav{display:flex;justify-content:center;gap:20px;padding:15px;flex-wrap:wrap}
+body{margin:0;background:#101010;color:#fff;font-family:Arial,sans-serif}
+header{background:#080808;padding:22px 15px;text-align:center;border-bottom:1px solid #b99353}
+header h1{color:#d9b875;margin:0;font-size:25px}
+header p{letter-spacing:3px;color:#ccc;font-size:11px}
+nav{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:15px;background:#191919}
 nav a{color:white;text-decoration:none}
-.hero{padding:65px 20px;text-align:center;background:linear-gradient(120deg,#21180e,#594127,#17120d)}
-.hero h2{font-size:34px;color:#e5c58e}
-.hero p{color:#eee;line-height:1.7}
-.btn{display:inline-block;background:#c49a58;color:#111;padding:13px 22px;border-radius:5px;text-decoration:none;font-weight:bold;margin-top:12px}
-section{padding:35px 18px}
-h2.section-title{text-align:center;color:#d5b477}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
-.product{background:#202020;border:1px solid #51412c;border-radius:10px;overflow:hidden}
-.product img{width:100%;height:190px;object-fit:cover}
-.product h3,.product p{padding:0 14px}
-.product p{color:#bbb}
-.product .btn{margin:0 14px 18px}
-.about{text-align:center;background:#1b1b1b;line-height:1.8}
-.contact{text-align:center;line-height:2}
-footer{text-align:center;padding:20px;background:#080808;color:#aaa}
+.hero{text-align:center;padding:65px 18px;background:linear-gradient(120deg,#21180e,#61482c,#17120d)}
+.hero h2{font-size:38px;color:#e5c58e}
+.hero p{line-height:1.7;color:#eee}
+.btn{background:#c49a58;color:#111;padding:12px 18px;border:0;border-radius:5px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block}
+section{padding:30px 16px}
+.section-title{text-align:center;color:#e0bd7d;margin-bottom:22px}
+.search{width:100%;max-width:600px;display:block;margin:15px auto;padding:14px;border-radius:8px;border:1px solid #a88954;background:#222;color:white;font-size:16px}
+.categories{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.cat{background:#252525;color:white;border:1px solid #987747;padding:10px 17px;border-radius:25px;cursor:pointer}
+.cat.active{background:#c49a58;color:#111}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px;max-width:1100px;margin:auto}
+.product{background:#202020;border:1px solid #55452d;border-radius:10px;overflow:hidden;padding-bottom:14px}
+.product img{width:100%;height:155px;object-fit:cover}
+.product h3{font-size:16px;margin:12px}
+.product p{font-size:13px;color:#bbb;margin:8px 12px}
+.price{color:#e0bd7d!important;font-weight:bold;font-size:15px!important}
+.product button{margin:5px 12px}
+.cartbox{max-width:700px;margin:20px auto;background:#202020;padding:18px;border:1px solid #9b7948;border-radius:10px}
+.cartitem{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #444}
+.cartitem button{background:#733;color:white;border:0;border-radius:5px;padding:5px 10px}
+.about{text-align:center;background:#1c1c1c;line-height:1.8}
+.contact{text-align:center;line-height:1.8}
+footer{text-align:center;background:#080808;padding:22px;color:#aaa}
+#cart{scroll-margin-top:15px}
 </style>
 </head>
 <body>
@@ -39,58 +48,51 @@ footer{text-align:center;padding:20px;background:#080808;color:#aaa}
 
 <nav>
 <a href="#home">Home</a>
-<a href="#products">Products</a>
-<a href="#about">About Us</a>
+<a href="#products">Shop</a>
+<a href="#cart">My Cart (<span id="count">0</span>)</a>
+<a href="#about">About</a>
 <a href="#contact">Contact</a>
 </nav>
 
 <div class="hero" id="home">
-<h2>Luxury Furniture For Your Dream Home</h2>
-<p>Discover beautiful, modern and custom-made wooden furniture.<br>
-Quality craftsmanship. Elegant designs. Trusted service.</p>
-<a class="btn" href="#products">Explore Collection</a>
+<h2>Make Your Home Beautiful</h2>
+<p>Discover premium furniture, elegant designs and custom-made wooden products.</p>
+<a class="btn" href="#products">SHOP COLLECTION</a>
 </div>
 
 <section id="products">
-<h2 class="section-title">Our Furniture Collection</h2>
-<div class="products">
+<h2 class="section-title">Explore Our Collection</h2>
+<input class="search" id="search" placeholder="Search sofa, bed, wardrobe..." oninput="render()">
 
-<div class="product">
-<img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600" alt="Luxury sofa">
-<h3>Luxury Sofa</h3>
-<p>Elegant sofa designs for your living room.</p>
-<a class="btn" href="#contact">Enquire Now</a>
+<div class="categories">
+<button class="cat active" onclick="category('All',this)">All</button>
+<button class="cat" onclick="category('Sofa',this)">Sofa</button>
+<button class="cat" onclick="category('Bed',this)">Beds</button>
+<button class="cat" onclick="category('Dining',this)">Dining</button>
+<button class="cat" onclick="category('Wardrobe',this)">Wardrobe</button>
 </div>
 
-<div class="product">
-<img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600" alt="Luxury bed">
-<h3>Designer Bed</h3>
-<p>Beautiful beds made for comfort and style.</p>
-<a class="btn" href="#contact">Enquire Now</a>
-</div>
+<div class="products" id="productsList"></div>
+</section>
 
-<div class="product">
-<img src="https://images.unsplash.com/photo-1499933374294-4584851497cc?w=600" alt="Wooden table">
-<h3>Wooden Furniture</h3>
-<p>Premium wooden furniture for your home.</p>
-<a class="btn" href="#contact">Enquire Now</a>
-</div>
-
+<section id="cart">
+<h2 class="section-title">Your Shopping Cart</h2>
+<div class="cartbox">
+<div id="cartItems">Your cart is empty.</div>
+<h3 id="total">Total: Price on request</h3>
+<button class="btn" onclick="order()">ORDER ON WHATSAPP</button>
 </div>
 </section>
 
 <section class="about" id="about">
-<h2 class="section-title">About Shri Biroba Furniture</h2>
-<p>We create furniture with quality, creativity and care.
-Our goal is to make your dream spaces beautiful.
-All types of wooden furniture and custom-made designs are available.</p>
+<h2 class="section-title">About Our Brand</h2>
+<p>At Shri Biroba Furniture, we create furniture with quality, creativity and care. All types of wooden furniture and custom-made designs are available.</p>
 </section>
 
 <section class="contact" id="contact">
 <h2 class="section-title">Contact Us</h2>
-<p>Looking for your dream furniture?</p>
-<p>Contact Shri Biroba Furniture Shop for enquiries and custom orders.</p>
-<a class="btn" href="https://wa.me/91XXXXXXXXXX">Order on WhatsApp</a>
+<p>Have a custom furniture idea? Talk to our team.</p>
+<button class="btn" onclick="order()">ENQUIRE ON WHATSAPP</button>
 </section>
 
 <footer>
@@ -98,5 +100,79 @@ All types of wooden furniture and custom-made designs are available.</p>
 <p>Crafting Your Dream Spaces</p>
 </footer>
 
+<script>
+const WHATSAPP_NUMBER="91XXXXXXXXXX";
+
+const products=[
+{name:"Luxury Sofa",cat:"Sofa",price:"Price on request",img:"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700"},
+{name:"Modern Sofa",cat:"Sofa",price:"Price on request",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=700"},
+{name:"Premium Bed",cat:"Bed",price:"Price on request",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=700"},
+{name:"Modern Bedroom Set",cat:"Bed",price:"Price on request",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=700"},
+{name:"Dining Table",cat:"Dining",price:"Price on request",img:"https://images.unsplash.com/photo-1617806118233-18e1de247200?w=700"},
+{name:"Wooden Dining",cat:"Dining",price:"Price on request",img:"https://images.unsplash.com/photo-1604578762246-41134e37f9cc?w=700"},
+{name:"Designer Wardrobe",cat:"Wardrobe",price:"Price on request",img:"https://images.unsplash.com/photo-1558997519-83ea9252edf8?w=700"},
+{name:"Premium Wardrobe",cat:"Wardrobe",price:"Price on request",img:"https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=700"}
+];
+
+let selected="All";
+let cart=[];
+
+function render(){
+const q=document.getElementById("search").value.toLowerCase();
+const list=products.filter(p=>(selected==="All"||p.cat===selected)&&p.name.toLowerCase().includes(q));
+document.getElementById("productsList").innerHTML=list.map((p)=>{
+const i=products.indexOf(p);
+return `<div class="product">
+<img src="${p.img}" alt="${p.name}">
+<h3>${p.name}</h3>
+<p>${p.cat}</p>
+<p class="price">${p.price}</p>
+<button class="btn" onclick="add(${i})">ADD TO CART</button>
+</div>`;
+}).join("");
+}
+
+function category(c,btn){
+selected=c;
+document.querySelectorAll(".cat").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+render();
+}
+
+function add(i){
+cart.push(products[i]);
+updateCart();
+alert(products[i].name+" added to cart!");
+}
+
+function removeItem(i){
+cart.splice(i,1);
+updateCart();
+}
+
+function updateCart(){
+document.getElementById("count").textContent=cart.length;
+document.getElementById("cartItems").innerHTML=cart.length?
+cart.map((p,i)=>`<div class="cartitem"><span>${p.name}</span><button onclick="removeItem(${i})">Remove</button></div>`).join("")
+:"Your cart is empty.";
+document.getElementById("total").textContent="Total: Price on request";
+}
+
+function order(){
+if(!cart.length){
+alert("Please add a product to your cart first.");
+return;
+}
+if(WHATSAPP_NUMBER.includes("X")){
+alert("WhatsApp number abhi set nahi hua hai. Shop ka number add karna baaki hai.");
+return;
+}
+let msg="Hello Shri Biroba Furniture! I want to enquire about:\n";
+cart.forEach(p=>msg+="- "+p.name+"\n");
+window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+}
+
+render();
+</script>
 </body>
 </html>
