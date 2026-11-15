@@ -244,13 +244,33 @@ function order(){
     let items=Object.entries(summary)
       .map(([n,q])=>n+" x "+q).join("\n");
 
-    let msg=
-      "Hello Shri Biroba Furniture Shop!\n\n"+
-      "NEW CUSTOMER ORDER\n\n"+
-      "Name: "+name+"\n"+
-      "Mobile: "+phone+"\n"+
-      "Address: "+address+"\n\n"+
-      "Products:\n"+items;
+
+const now = new Date();
+
+const orderDate = now.toLocaleString("en-IN", {
+  timeZone: "Asia/Kolkata"
+});
+
+const orderId = "SBF-" + Date.now();
+
+const customerKey = "sbf_customer_" + phone;
+let customerId = localStorage.getItem(customerKey);
+
+if (!customerId) {
+  customerId = "SBF-CUST-" + Date.now();
+  localStorage.setItem(customerKey, customerId);
+}
+
+let msg =
+"Hello Shri Biroba Furniture Shop!\n\n" +
+  "NEW CUSTOMER ORDER\n\n" +
+  "Order ID: " + orderId + "\n" +
+  "Customer ID: " + customerId + "\n" +
+  "Date & Time: " + orderDate + "\n\n" +
+  "Name: " + name + "\n" +
+  "Mobile: " + phone + "\n" +
+  "Address: " + address + "\n\n" +
+  "Products:\n" + items;
 
     window.location.href=
       "https://wa.me/"+WHATSAPP_NUMBER+
