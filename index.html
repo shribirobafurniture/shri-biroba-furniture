@@ -159,17 +159,103 @@ document.getElementById("total").textContent="Total: Price on request";
 }
 
 function order(){
-if(!cart.length){
-alert("Please add a product to your cart first.");
-return;
-}
-if(WHATSAPP_NUMBER.includes("X")){
-alert("WhatsApp number abhi set nahi hua hai. Shop ka number add karna baaki hai.");
-return;
-}
-let msg="Hello Shri Biroba Furniture! I want to enquire about:\n";
-cart.forEach(p=>msg+="- "+p.name+"\n");
-window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+  if(!cart.length){
+    alert("Please add a product to your cart!");
+    return;
+  }
+
+  const oldModal=document.getElementById("orderModal");
+  if(oldModal) oldModal.remove();
+
+  const modal=document.createElement("div");
+  modal.id="orderModal";
+
+  modal.style.cssText=`
+    position:fixed;inset:0;background:#000c;
+    z-index:9999;display:flex;align-items:center;
+    justify-content:center;padding:18px;
+  `;
+
+  modal.innerHTML=`
+    <div style="background:#191919;color:white;
+      border:2px solid #d9b875;border-radius:15px;
+      padding:22px;width:100%;max-width:420px;
+      max-height:90vh;overflow:auto">
+
+      <h2 style="color:#d9b875;text-align:center">
+        Customer Order Details
+      </h2>
+
+      <form id="customerOrderForm">
+        <label>Customer Name</label>
+        <input name="customerName" required
+          placeholder="Enter your name"
+          style="width:100%;padding:13px;margin:8px 0 15px;
+          box-sizing:border-box">
+
+        <label>Mobile Number</label>
+        <input name="phone" type="tel" required
+          pattern="[0-9]{10}" maxlength="10"
+          placeholder="10 digit mobile number"
+          style="width:100%;padding:13px;margin:8px 0 15px;
+          box-sizing:border-box">
+
+        <label>Delivery Address</label>
+        <textarea name="address" required
+          placeholder="Enter full delivery address"
+          style="width:100%;padding:13px;margin:8px 0 15px;
+          box-sizing:border-box" rows="3"></textarea>
+
+        <button type="submit"
+          style="width:100%;padding:15px;
+          background:#d9b875;border:0;border-radius:8px;
+          font-weight:bold;font-size:16px">
+          CONTINUE TO WHATSAPP
+        </button>
+
+        <button type="button" id="closeOrder"
+          style="width:100%;padding:12px;margin-top:10px;
+          background:#333;color:white;border:0">
+          CANCEL
+        </button>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  document.getElementById("closeOrder").onclick=()=>{
+    modal.remove();
+  };
+
+  document.getElementById("customerOrderForm")
+  .onsubmit=function(e){
+    e.preventDefault();
+
+    const name=this.customerName.value.trim();
+    const phone=this.phone.value.trim();
+    const address=this.address.value.trim();
+
+    const summary=cart.reduce((a,p)=>{
+      a[p.name]=(a[p.name]||0)+1;
+      return a;
+    },{});
+
+    let items=Object.entries(summary)
+      .map(([n,q])=>n+" x "+q).join("\n");
+
+    let msg=
+      "Hello Shri Biroba Furniture Shop!\n\n"+
+      "NEW CUSTOMER ORDER\n\n"+
+      "Name: "+name+"\n"+
+      "Mobile: "+phone+"\n"+
+      "Address: "+address+"\n\n"+
+      "Products:\n"+items;
+
+    window.location.href=
+      "https://wa.me/"+WHATSAPP_NUMBER+
+      "?text="+encodeURIComponent(msg);
+  };
 }
 
 render();
