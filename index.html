@@ -238,7 +238,7 @@ function order(){
   };
 
   document.getElementById("customerOrderForm")
-  .onsubmit=function(e){
+  .onsubmit=async function(e){
     e.preventDefault();
 
     const name=this.customerName.value.trim();
@@ -280,7 +280,27 @@ let msg =
   "Mobile: " + phone + "\n" +
   "Address: " + address + "\n\n" +
   "Products:\n" + items;
+const totalAmount = cart.reduce((sum, p) =>
+  sum + (Number(String(p.price).replace(/[^\d.]/g, "")) || 0), 0);
 
+const { error } = await supabaseClient
+  .from("orders")
+  .insert([{
+    customer_name: name,
+    phone: phone,
+    address: address,
+    product_name: items,
+    quantity: cart.length,
+    total_price: totalAmount,
+    order_status: "New",
+    order_code: orderId,
+    customer_code: customerId
+  }]);
+
+if (error) {
+  alert("Order save failed: " + error.message);
+  return;
+}
     window.location.href=
       "https://wa.me/"+WHATSAPP_NUMBER+
       "?text="+encodeURIComponent(msg);
