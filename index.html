@@ -143,7 +143,7 @@ const list=products.filter(p=>(selected==="All"||p.cat===selected)&&p.name.toLow
 document.getElementById("productsList").innerHTML=list.map((p)=>{
 const i=products.indexOf(p);
 return `<div class="product">
-<img src="${p.img}" alt="${p.name}">
+<img src="${p.img}" alt="${p.name}" onclick="openProduct(${i})" style="cursor:pointer">
 <h3>${p.name}</h3>
 <p>${p.cat}</p>
 <p class="price">${p.price}</p>
