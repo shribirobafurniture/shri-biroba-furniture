@@ -114,7 +114,17 @@ const supabaseClient = window.supabase.createClient(
 const WHATSAPP_NUMBER="917972159036";
 
 const products=[
-{name:"Luxury Sofa",cat:"Sofa",price:"Price on request",img:"https://zuqivuuejtwnydovgxcx.supabase.co/storage/v1/object/public/product-images/sofa1.jpg.jpg"},
+{
+  name:"Luxury Sofa",
+  cat:"Sofa",
+  price:"Price on request",
+  img:"https://zuqivuuejtwnydovgxcx.supabase.co/storage/v1/object/public/product-images/sofa1.jpg.jpg",
+  images:[
+    "https://zuqivuuejtwnydovgxcx.supabase.co/storage/v1/object/public/product-images/sofa1.jpg.jpg",
+    "https://zuqivuuejtwnydovgxcx.supabase.co/storage/v1/object/public/product-images/IMG20260714190002.jpg",
+    "https://zuqivuuejtwnydovgxcx.supabase.co/storage/v1/object/public/product-images/Screenshot_2026-11-06-09-59-56-51_40deb401b9ffe8e1df2f1cc5ba480b12.jpg"
+  ]
+},
 {name:"Modern Sofa",cat:"Sofa",price:"Price on request",img:"https://images.unsplash.com/photo-1550254478-ead40cc54513?w=700"},
 {name:"Premium Bed",cat:"Bed",price:"Price on request",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=700"},
 {name:"Modern Bedroom Set",cat:"Bed",price:"Price on request",img:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=700"},
@@ -306,6 +316,129 @@ if (error) {
       "https://wa.me/"+WHATSAPP_NUMBER+
       "?text="+encodeURIComponent(msg);
   };
+}
+
+function openProduct(i){
+  const p=products[i];
+  const photos=(p.images && p.images.length?p.images:[p.img]).slice(0,5);
+  let current=0;
+  let zoom=false;
+
+  const old=document.getElementById("productGallery");
+  if(old) old.remove();
+
+  const modal=document.createElement("div");
+  modal.id="productGallery";
+
+  modal.style.cssText=`
+    position:fixed;inset:0;
+    z-index:10000;background:#080808ee;
+    display:flex;align-items:center;
+    justify-content:center;padding:15px;
+  `;
+
+  modal.innerHTML=`
+    <div style="background:#191919;color:white;
+    border:2px solid #d9b875;border-radius:15px;
+    padding:15px;width:100%;max-width:500px;
+    max-height:95vh;overflow:auto;text-align:center">
+
+      <button id="closeGallery"
+      style="float:right;background:#d9b875;
+      padding:8px;border:0;border-radius:6px">
+      CLOSE ✕</button>
+
+      <h2 style="color:#d9b875">${p.name}</h2>
+
+      <img id="galleryMain"
+      src="${photos[0]}" alt="${p.name}"
+      style="width:100%;height:300px;
+      object-fit:contain;border-radius:10px;
+      transition:transform .2s">
+
+      <div style="display:flex;gap:8px;
+      justify-content:center;margin:12px 0">
+        <button id="prevPhoto">❮ Previous</button>
+        <span id="photoCount">1/${photos.length}</span>
+        <button id="nextPhoto">Next ❯</button>
+      </div>
+
+      <div id="galleryThumbs"
+      style="display:flex;gap:8px;
+      overflow-x:auto;justify-content:center">
+      </div>
+
+      <div style="display:flex;gap:8px;
+      justify-content:center;margin:15px 0">
+        <button id="zoomPhoto">ZOOM</button>
+        <button id="fullPhoto">FULL SCREEN</button>
+      </div>
+
+      <p>${p.cat}</p>
+      <h3 style="color:#d9b875">${p.price}</h3>
+
+      <button id="galleryCart"
+      class="btn">ADD TO CART</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const main=modal.querySelector("#galleryMain");
+  const thumbs=modal.querySelector("#galleryThumbs");
+
+  function showPhoto(){
+    main.src=photos[current];
+    main.style.transform="scale(1)";
+    zoom=false;
+    modal.querySelector("#photoCount").textContent=
+      (current+1)+"/"+photos.length;
+    thumbs.innerHTML="";
+
+    photos.forEach((src,index)=>{
+      const img=document.createElement("img");
+      img.src=src;
+      img.style.cssText=
+        "width:65px;height:60px;object-fit:cover;"+
+        "border:2px solid "+(index===current?"#d9b875":"#555")+
+        ";border-radius:6px;flex-shrink:0;cursor:pointer";
+      img.onclick=()=>{
+        current=index;
+        showPhoto();
+      };
+      thumbs.appendChild(img);
+    });
+  }
+
+  modal.querySelector("#prevPhoto").onclick=()=>{
+    current=(current-1+photos.length)%photos.length;
+    showPhoto();
+  };
+
+  modal.querySelector("#nextPhoto").onclick=()=>{
+    current=(current+1)%photos.length;
+    showPhoto();
+  };
+
+  modal.querySelector("#zoomPhoto").onclick=()=>{
+    zoom=!zoom;
+    main.style.transform=zoom?"scale(1.5)":"scale(1)";
+  };
+
+  modal.querySelector("#fullPhoto").onclick=()=>{
+    if(main.requestFullscreen) main.requestFullscreen();
+  };
+
+  modal.querySelector("#closeGallery").onclick=()=>{
+    modal.remove();
+  };
+
+  modal.querySelector("#galleryCart").onclick=()=>{
+    modal.remove();
+    add(i);
+  };
+
+  showPhoto();
 }
 
 render();
