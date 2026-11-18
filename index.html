@@ -146,6 +146,122 @@ async function updateDeliveryCharge(orderCode,inputId){
  if(error){console.error(error);alert("Delivery charge save failed: "+error.message);return}
  alert("Delivery charges saved. Customers can see them in order tracking.");loadAdminOrders();
 }
+   
+/* SHRI BIROBA FURNITURE - ORDER CANCELLATION & OWNER ALERTS */
+
+let ownerOrderChannel = null;
+
+async function cancelCustomerOrder() {
+  const code = document.getElementById("trackCode").value.trim().toUpperCase();
+  const phone = (document.getElementById("trackPhone").value || "").replace(/\D/g, "");
+
+  if (!confirm("Are you sure you want to cancel this order?")) return;
+
+  const { data, error } = await db.rpc("customer_cancel_order", {
+    p_order_code: code,
+    p_phone: phone
+  });
+
+  if (error) {
+    alert("Cancellation failed: " + error.message);
+    return;
+  }
+
+  if (!data?.success) {
+    alert(data?.message || "Order cannot be cancelled.");
+    return;
+  }
+
+  alert("Your order has been cancelled successfully.");
+  await trackOrder();
+}
+
+const originalTrackOrder = trackOrder;
+
+trackOrder = async function () {
+  await originalTrackOrder();
+
+  const code = document.getElementById("trackCode").value.trim().toUpperCase();
+  const phone = (document.getElementById("trackPhone").value || "").replace(/\D/g, "");
+
+  if (!code || phone.length < 10 || !db) return;
+
+  const { data, error } = await db.rpc("customer_track_order", {
+    p_order_code: code,
+    p_phone: phone
+  });
+
+  if (error || !data?.length) return;
+
+  const canCancel = data.every(o =>
+    ["New", "Confirmed"].includes(o.order_status)
+  );
+
+  if (canCancel) {
+    document.getElementById("trackResult").insertAdjacentHTML(
+      "beforeend",
+      '<button class="btn" type="button" onclick="cancelCustomerOrder()">Cancel Order</button>'
+    );
+  }
+};
+
+async function enableOwnerOrderNotifications() {
+  if (!db || !adminUser) return;
+
+  if ("Notification" in window && Notification.permission === "default") {
+    await Notification.requestPermission();
+  }
+
+  if (ownerOrderChannel) return;
+
+  ownerOrderChannel = db.channel("shri-biroba-owner-orders")
+    .on("postgres_changes", {
+      event: "INSERT",
+      schema: "public",
+      table: "orders"
+    }, payload => {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("New Furniture Order", {
+          body: "New order: " + (payload.new.order_code || "")
+        });
+      }
+      loadAdminOrders();
+    })
+    .on("postgres_changes", {
+      event: "UPDATE",
+      schema: "public",
+      table: "orders"
+    }, payload => {
+      if (
+        payload.new.order_status === "Cancelled" &&
+        payload.old?.order_status !== "Cancelled"
+      ) {
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("Order Cancelled", {
+            body: "Order " + (payload.new.order_code || "") + " was cancelled."
+          });
+        }
+      }
+      loadAdminOrders();
+    })
+    .subscribe();
+}
+
+const originalRefreshAdminUI = refreshAdminUI;
+
+refreshAdminUI = async function () {
+  await originalRefreshAdminUI();
+
+  if (adminUser) {
+    await enableOwnerOrderNotifications();
+  } else if (ownerOrderChannel) {
+    await db.removeChannel(ownerOrderChannel);
+    ownerOrderChannel = null;
+  }
+};
+
+/* END ORDER FEATURES */
+
 document.getElementById("year").textContent=new Date().getFullYear();saveCart();loadProducts();refreshAdminUI();
 </script>
 </body></html>
