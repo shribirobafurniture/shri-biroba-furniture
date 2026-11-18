@@ -30,9 +30,41 @@
 <section id="admin" class="hidden"><h2 class="section-title">Owner Admin Panel</h2><div class="notice">Security reminder: Owner access uses your Supabase Auth account. Keep your password private, keep database RLS enabled, and never place a service_role key in this website.</div><div id="adminLogin" class="panel"><form id="loginForm"><label>Owner email</label><input class="field" id="adminEmail" type="email" required><label>Password</label><input class="field" id="adminPassword" type="password" required><button class="btn" type="submit">Sign in</button></form><p class="small">Create your owner account in Supabase Authentication → Users before signing in.</p></div><div id="adminArea" class="hidden"><div class="actions"><button class="btn" onclick="adminTab('manage')">Manage products</button><button class="btn" onclick="adminTab('orders')">Manage orders</button><button class="btn" onclick="adminTab('add')">Add new product</button><button class="btn" onclick="adminLogout()">Sign out</button></div><div id="adminManage" class="panel"><h3>Products</h3><div id="adminProducts"></div></div><div id="adminOrders" class="panel hidden"><h3>Recent orders</h3><div id="adminOrderList"></div></div><div id="adminAdd" class="panel hidden"><h3 id="productFormTitle">Add a product</h3><form id="productForm"><input type="hidden" id="editId"><div class="formgrid"><div><label>Product name *</label><input class="field" id="pName" required></div><div><label>Price (₹) *</label><input class="field" id="pPrice" type="number" min="0" required></div><div><label>Category *</label><input class="field" id="pCategory" list="categoryList" required placeholder="Sofa, Bed, Doors, Door Frames, Tipoy, Window Frames"><datalist id="categoryList"></datalist></div><div><label>Availability</label><select class="field" id="pAvailable"><option value="true">Available</option><option value="false">Unavailable</option></select></div><div class="full"><label>Description</label><textarea class="field" id="pDescription" rows="3"></textarea></div><div class="full"><label>Product photos (select up to 6 images)</label><input class="field" id="pImages" type="file" accept="image/*" multiple onchange="validateNewPhotos()"><div id="existingPhotos" class="small">Save up to 6 photos per product. You can remove existing photos below.</div><div id="photoCaptionEditor" class="small" style="margin-top:10px">Select photos to add wood-type labels.</div></div></div><p class="small">Photos upload to the Supabase Storage bucket named product-images. Keep or remove existing photos, then add new photos. Maximum 6 photos per product.</p><button class="btn" type="submit">Save product</button><button class="btn" type="button" onclick="adminTab('manage')">Cancel</button></form><div id="adminMessage"></div></div></div></section>
 </main>
 <div id="photoViewer" class="photo-viewer hidden" role="dialog" aria-modal="true" aria-label="Product photo viewer" onclick="if(event.target===this)closePhotoViewer()"><button class="viewer-close" onclick="closePhotoViewer()">Close ✕</button><div class="viewer-controls"><button onclick="viewerMove(-1)">←</button><button onclick="viewerMove(1)">→</button></div><img id="viewerImage" src="" alt="Full size product photo"></div>
+   <div class="actions" style="justify-content:center;margin-top:16px">
+  <button class="btn" type="button" onclick="downloadWebsiteLink()">
+    Download Website Link
+  </button>
+</div>
+<p class="small">Save and share our shop website link.</p>
 <footer class="footer">© <span id="year"></span> Shri Biroba Furniture Shop · Crafted for your home<br><span class="small">For orders and enquiries: +91 7972159036</span></footer>
 <script>
-/* IMPORTANT: paste your existing Supabase Project URL and Publishable key below.
+window.whatsapp = function(t){
+  window.location.href = waUrl(t);
+};
+
+function downloadWebsiteLink(){
+  const link = window.location.origin +
+               window.location.pathname;
+
+  const content =
+    "Shri Biroba Furniture Shop\nWebsite: " + link;
+
+  const blob = new Blob([content], {
+    type: "text/plain;charset=utf-8"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "Shri-Biroba-Furniture-Website-Link.txt";
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+} /*: paste your existing Supabase Project URL and Publishable key below.
    Never put a service_role/secret key in website code. */
 const SUPABASE_URL = "https://zuqivuuejtwnydovgxcx.supabase.co";
 const SUPABASE_KEY = "sb_publishable_G8M9z0z_ymf1AdbAMGJ7cA_QziVYF8D";
